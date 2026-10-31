@@ -1,7 +1,15 @@
+import { existsSync } from "node:fs";
 import { z } from "zod";
 import pg from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
+
+// Load local env files without overriding already-set variables.
+for (const file of [".env.local", ".env"]) {
+  if (existsSync(file)) {
+    process.loadEnvFile(file);
+  }
+}
 
 let pool;
 console.log("Running database migrations");

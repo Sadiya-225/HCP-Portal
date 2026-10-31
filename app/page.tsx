@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const services = [
   {
@@ -33,24 +35,25 @@ export default function Home() {
             className="h-14 w-14"
           />
           <div>
-            <p className="text-lg font-semibold tracking-wide">
+            <p className="font-display text-lg font-semibold tracking-wide">
               Hyderabad City Police
             </p>
             <p className="text-sm text-blue-200">Citizen Services Portal</p>
           </div>
           <nav className="ml-auto flex items-center gap-3">
-            <Link
-              href="/login"
-              className="rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-white/10"
+            <Button
+              asChild
+              variant="ghost"
+              className="text-white hover:bg-white/10 hover:text-white"
             >
-              Sign in
-            </Link>
-            <Link
-              href="/register"
-              className="rounded-md bg-gold px-4 py-2 text-sm font-semibold text-navy-deep hover:bg-gold-soft"
+              <Link href="/login">Sign in</Link>
+            </Button>
+            <Button
+              asChild
+              className="bg-gold font-semibold text-navy-deep hover:bg-gold-soft"
             >
-              Register
-            </Link>
+              <Link href="/register">Register</Link>
+            </Button>
           </nav>
         </div>
       </header>
@@ -61,7 +64,7 @@ export default function Home() {
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-gold">
               Official Portal
             </p>
-            <h1 className="max-w-2xl text-3xl font-bold leading-tight sm:text-5xl">
+            <h1 className="max-w-2xl font-display text-3xl font-bold leading-tight sm:text-5xl">
               Serving Hyderabad with duty, honour, and compassion.
             </h1>
             <p className="max-w-xl text-base text-blue-100 sm:text-lg">
@@ -69,18 +72,21 @@ export default function Home() {
               citizen services and manage your requests.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link
-                href="/register"
-                className="rounded-md bg-gold px-6 py-3 text-sm font-semibold text-navy-deep hover:bg-gold-soft"
+              <Button
+                asChild
+                size="lg"
+                className="bg-gold font-semibold text-navy-deep hover:bg-gold-soft"
               >
-                Create an account
-              </Link>
-              <Link
-                href="/login"
-                className="rounded-md border border-white/40 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10"
+                <Link href="/register">Create an account</Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white"
               >
-                Sign in to your account
-              </Link>
+                <Link href="/login">Sign in to your account</Link>
+              </Button>
             </div>
           </div>
         </section>
@@ -88,17 +94,18 @@ export default function Home() {
         <section className="mx-auto w-full max-w-6xl px-6 py-14">
           <div className="grid gap-6 sm:grid-cols-3">
             {services.map((service) => (
-              <div
-                key={service.title}
-                className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
-              >
-                <h2 className="text-lg font-semibold text-navy">
-                  {service.title}
-                </h2>
-                <p className="mt-2 text-sm leading-relaxed text-muted">
-                  {service.description}
-                </p>
-              </div>
+              <Card key={service.title}>
+                <CardHeader>
+                  <CardTitle className="font-display text-lg text-navy">
+                    {service.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {service.description}
+                  </p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </section>

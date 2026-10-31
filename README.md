@@ -20,32 +20,45 @@ with automatic HTTPS.
 
 Two ways to run locally.
 
-### A. Direct npm dev with a local PostgreSQL
+### A. Direct npm dev (zero-setup)
 
-Prerequisites: Node.js 24+ and a PostgreSQL database.
-
-```bash
-npm install
-cp .env.example .env   # fill in real values
-```
-
-Required env vars for the app (`lib/env.ts` validates them at runtime):
-
-- `DATABASE_URL` — `postgresql://user:pass@host:5432/db`
-- `DATABASE_MIGRATION_URL` — used by `db:generate`/`db:migrate`
-  (falls back to `DATABASE_URL`)
-- `BETTER_AUTH_SECRET` — at least 32 chars (`openssl rand -base64 32`)
-- `BETTER_AUTH_URL` — e.g. `http://localhost:3000`
-
-Optional: `TRUSTED_ORIGINS` (comma-separated), `DB_POOL_MAX` (1–50, default
-10), and the SMTP/`PASSWORD_RESET_ENABLED` block.
-
-Apply migrations, then start the dev server:
+On a fresh clone, with no `.env`, Docker, or system PostgreSQL:
 
 ```bash
-npm run db:migrate
+npm ci
 npm run dev
 ```
+
+`npm run dev` automatically:
+
+1. Generates a gitignored `.env.local` with cryptographically random
+   secrets (never printed),
+2. Starts an embedded, loopback-only (`127.0.0.1:54329`) PostgreSQL 17
+   instance persisted at `.data/postgres`,
+3. Applies the checked-in Drizzle migrations,
+4. Starts Next.js at `http://localhost:3000`.
+
+To use your own external PostgreSQL instead, create `.env.local` with
+`DEV_EMBEDDED_POSTGRES=false` and real `DATABASE_URL` /
+`DATABASE_MIGRATION_URL` values. Required env vars validated at runtime
+(`lib/env.ts`): `DATABASE_URL`, `BETTER_AUTH_SECRET` (min 32 chars,
+`openssl rand -base64 32`), `BETTER_AUTH_URL`; optional `TRUSTED_ORIGINS`,
+`DB_POOL_MAX` (1–50), and the SMTP/`PASSWORD_RESET_ENABLED` block.
+
+`npm run dev:next` starts raw `next dev` and expects a database and env
+to already be running/configured. `npm run db:migrate` applies
+migrations manually (loads `.env.local`/`.env`).
+
+The embedded database is **development-only** — production/Compose still
+runs the PostgreSQL 17 container with least-privilege roles.
+
+> **npm install-script approvals:** this repo pins `allowScripts`
+> approvals (see `package.json`) for the install scripts it needs,
+> including the Windows `@embedded-postgres/windows-x64` binary. On
+> non-Windows platforms npm may report a pending
+> `@embedded-postgres/<platform-arch>` postinstall — review and approve
+> the matching package (`npm approve-scripts <pkg>`) if `npm run dev`
+> cannot find database binaries.
 
 ### B. Full Compose stack locally
 
@@ -70,7 +83,8 @@ the Dockerfile).
 
 | Command | Purpose |
 | --- | --- |
-| `npm run dev` | Next.js dev server |
+| `npm run dev` | Dev bootstrap: env + embedded PostgreSQL + migrations + Next |
+| `npm run dev:next` | Raw `next dev` (DB/env must already exist) |
 | `npm run build` / `start` | Production build / standalone server |
 | `npm run lint` | ESLint |
 | `npm run typecheck` | `tsc --noEmit` |

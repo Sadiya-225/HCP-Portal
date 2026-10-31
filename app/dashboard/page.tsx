@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import Image from "next/image";
 import { getCurrentUser } from "@/lib/dal";
 import { LogoutButton } from "@/components/logout-button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
@@ -10,23 +11,29 @@ async function AccountSummary() {
   const user = await getCurrentUser();
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="text-lg font-semibold text-navy">Your account</h2>
-      <dl className="mt-4 grid gap-3 text-sm">
-        <div className="flex flex-col sm:flex-row sm:gap-2">
-          <dt className="w-32 font-medium text-muted">Name</dt>
-          <dd>{user.name}</dd>
-        </div>
-        <div className="flex flex-col sm:flex-row sm:gap-2">
-          <dt className="w-32 font-medium text-muted">Email</dt>
-          <dd>{user.email}</dd>
-        </div>
-        <div className="flex flex-col sm:flex-row sm:gap-2">
-          <dt className="w-32 font-medium text-muted">Email verified</dt>
-          <dd>{user.emailVerified ? "Yes" : "No"}</dd>
-        </div>
-      </dl>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="font-display text-lg text-navy">
+          Your account
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <dl className="grid gap-3 text-sm">
+          <div className="flex flex-col sm:flex-row sm:gap-2">
+            <dt className="w-32 font-medium text-muted-foreground">Name</dt>
+            <dd>{user.name}</dd>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:gap-2">
+            <dt className="w-32 font-medium text-muted-foreground">Email</dt>
+            <dd>{user.email}</dd>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:gap-2">
+            <dt className="w-32 font-medium text-muted-foreground">Email verified</dt>
+            <dd>{user.emailVerified ? "Yes" : "No"}</dd>
+          </div>
+        </dl>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -55,16 +62,20 @@ export default function DashboardPage() {
       </header>
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-10">
-        <h1 className="text-2xl font-bold text-navy">Dashboard</h1>
-        <p className="mt-1 text-sm text-muted">
+        <h1 className="font-display text-2xl font-bold text-navy">Dashboard</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Welcome to your citizen services account.
         </p>
         <div className="mt-6">
           <Suspense
             fallback={
-              <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-muted shadow-sm">
-                Loading your account…
-              </div>
+              <Card>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Loading your account…
+                  </p>
+                </CardContent>
+              </Card>
             }
           >
             <AccountSummary />

@@ -14,3 +14,4 @@ tests
 .idea
 npm-debug.log*
 Dockerfile
+.data

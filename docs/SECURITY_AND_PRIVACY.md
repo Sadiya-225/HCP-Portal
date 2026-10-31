@@ -39,6 +39,9 @@ Better Auth; sessions are revoked on password reset.
 
 - **Caddy** contacts the ACME CA (Let's Encrypt by default) for
   certificate issuance/renewal and may perform OCSP/CRL checks.
+- **Fonts**: `next/font` downloads Inter and Bricolage Grotesque from
+  Google Fonts at build time and self-hosts them; browsers make **no**
+  font requests to Google at runtime.
 - **SMTP** only when password reset is explicitly enabled.
 - **OS/Docker** package registries during build/update only.
 
@@ -61,6 +64,18 @@ There are no other outbound calls at runtime.
   (`docker inspect`, `/proc`). Keep host access restricted.
 - The database admin password exists only on the `db` service; the app
   uses a DML-only role and migrations a separate DDL role.
+
+## Local development database
+
+`npm run dev` uses a development-only embedded PostgreSQL 17 instance
+(`embedded-postgres`): it binds to `127.0.0.1:54329` only, persists under
+`.data/postgres` (gitignored), and uses a random per-developer password
+plus a random Better Auth secret generated into the gitignored
+`.env.local`. It is not used in production; Compose deployments run the
+hardened PostgreSQL container with separate migration/app roles. The
+generated credentials are local-development conveniences — they still
+grant full access to the local database, so do not place real or
+production data in `.data/postgres`.
 
 ## Infrastructure caveats
 
